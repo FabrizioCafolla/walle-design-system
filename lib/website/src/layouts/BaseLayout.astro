@@ -1,0 +1,30 @@
+---
+import { Navbar, Footer, Head } from "@components";
+import "@styles/global.css";
+
+const {
+  headerTitle,
+  headerDescription = "Il portale europeo sull'open source.",
+  headerImage = null,
+  headerRobots = "index, follow",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <Head
+      title={headerTitle}
+      description={headerDescription}
+      image={headerImage}
+      robots={headerRobots}
+    />
+  </head>
+  <body>
+    <Navbar />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

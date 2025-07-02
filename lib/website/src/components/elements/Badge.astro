@@ -1,0 +1,206 @@
+---
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  /**
+   * Testo da visualizzare nella label
+   */
+  text: string;
+
+  /**
+   * Colore della label
+   * @default "gray"
+   */
+  color?: "primary" | "secondary" | "alternative" | "gray" | "success" | "warning" | "danger";
+
+  /**
+   * Nome dell'icona da mostrare (astro-icon)
+   */
+  iconName?: string;
+
+  /**
+   * Posizione dell'icona rispetto al testo
+   * @default "end"
+   */
+  iconPosition?: "start" | "end";
+
+  /**
+   * URL opzionale per rendere la label cliccabile
+   */
+  link?: string;
+
+  /**
+   * Target HTML per i link (es. "_blank")
+   */
+  target?: string;
+
+  /**
+   * Classi CSS aggiuntive
+   */
+  extraClass?: string;
+
+  /**
+   * Dimensione della label
+   * @default "medium"
+   */
+  size?: "small" | "medium" | "large";
+}
+
+const {
+  text,
+  color = "gray",
+  iconName,
+  iconPosition = "end",
+  link,
+  target,
+  extraClass = "",
+  size = "medium",
+} = Astro.props;
+
+// Combinare le classi
+const labelClasses = [
+  "eos-label",
+  `eos-label-${color}`,
+  `eos-label-${size}`,
+  link ? "eos-label-link" : "",
+  iconName ? `eos-label-with-icon eos-label-icon-${iconPosition}` : "",
+  extraClass,
+]
+  .filter(Boolean)
+  .join(" ");
+
+// Elemento da renderizzare (a o span, in base alla presenza del link)
+const Element = link ? "a" : "span";
+
+// Attributi aggiuntivi per il componente
+const attrs = link ? { href: link, target } : {};
+---
+
+<Element class={labelClasses} {...attrs}>
+  {iconName && <Icon name={iconName} class="eos-label-icon" aria-hidden="true" />}
+  <span class="eos-label-text">{text}</span>
+</Element>
+
+<style>
+  /* Base styles */
+  .eos-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    border-radius: 2rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  /* Icon position control */
+  .eos-label-with-icon {
+    position: relative;
+  }
+
+  .eos-label-icon-start {
+    flex-direction: row;
+  }
+
+  .eos-label-icon-end {
+    flex-direction: row-reverse;
+  }
+
+  /* Sizes */
+  .eos-label-small {
+    font-size: 0.8rem;
+    padding: 0.2em 0.7em;
+  }
+
+  .eos-label-medium {
+    font-size: 0.95rem;
+    padding: 0.25em 0.8em;
+  }
+
+  .eos-label-large {
+    font-size: 1rem;
+    padding: 0.3em 0.9em;
+  }
+
+  /* Icon sizing */
+  .eos-label-icon {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+  }
+
+  /* Colors - Using CSS variables from global.css */
+  .eos-label-primary {
+    background-color: var(--primary-light);
+    color: var(--white);
+  }
+
+  .eos-label-secondary {
+    background-color: var(--secondary-light);
+    color: var(--white);
+  }
+
+  .eos-label-alternative {
+    background-color: var(--alternative-light);
+    color: var(--black);
+  }
+
+  .eos-label-gray {
+    background-color: var(--gray-light);
+    color: var(--black);
+  }
+
+  .eos-label-success {
+    background-color: #2ecc71;
+    color: var(--white);
+  }
+
+  .eos-label-warning {
+    background-color: #f39c12;
+    color: var(--white);
+  }
+
+  .eos-label-danger {
+    background-color: #e74c3c;
+    color: var(--white);
+  }
+
+  /* Link behavior */
+  .eos-label-link {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .eos-label-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .eos-label-primary.eos-label-link:hover {
+    background-color: var(--primary-dark);
+  }
+
+  .eos-label-secondary.eos-label-link:hover {
+    background-color: var(--secondary-dark);
+  }
+
+  .eos-label-alternative.eos-label-link:hover {
+    background-color: var(--alternative-dark);
+  }
+
+  .eos-label-gray.eos-label-link:hover {
+    background-color: var(--gray-dark);
+    color: var(--white);
+  }
+
+  /* Ensure all labels have proper spacing when next to each other */
+  .eos-label + .eos-label {
+    margin-left: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .eos-label-large {
+      font-size: 0.95rem;
+      padding: 0.25em 0.8em;
+    }
+  }
+</style>

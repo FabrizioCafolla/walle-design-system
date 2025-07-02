@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "dependencies-actions"
+    reviewers:
+      - "FabrizioCafolla"
+  - package-ecosystem: "npm"
+    directory: "/lib/website"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "dependencies-yarn"
+    reviewers:
+      - "FabrizioCafolla"

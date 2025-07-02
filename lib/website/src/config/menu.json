@@ -1,0 +1,16 @@
+{
+  "main": [
+    {
+      "name": "Home",
+      "url": "/"
+    },
+    {
+      "name": "Example 1",
+      "url": "/"
+    },
+    {
+      "name": "Example 2",
+      "url": "/"
+    }
+  ]
+}

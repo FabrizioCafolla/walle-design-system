@@ -1,0 +1,14 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import type { Posts } from "@utils/interfaces";
+import { SectionHeaderStandard } from "@components";
+
+interface Props extends Posts {}
+
+const data = Astro.props;
+---
+
+<BaseLayout headerTitle={data.title} headerDescription={data.description}>
+  <SectionHeaderStandard title={data.title} subtitle={data.description} variant="secondary" />
+  <slot />
+</BaseLayout>

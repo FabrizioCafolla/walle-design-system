@@ -1,0 +1,377 @@
+---
+import NavbarLink from "./NavbarLink.astro";
+import { Icon } from "astro-icon/components";
+import { config } from "@config/config";
+import menu from "@config/menu.json";
+
+export interface NavigationLink {
+  name: string;
+  url: string;
+}
+
+const { main }: { main: NavigationLink[] } = menu;
+
+// Generate unique ID for this instance (for accessibility)
+const navId = `nav-${Math.random().toString(36).substring(2, 9)}`;
+---
+
+<header class="site-header">
+  <div class="container">
+    <nav class="main-nav" aria-label="Main navigation">
+      <div class="logo-container">
+        <h2 class="logo-text">
+          <a href="/" title="Home page">
+            {config.default.site.title}
+          </a>
+        </h2>
+      </div>
+
+      <button
+        id="mobile-menu-toggle"
+        class="hamburger"
+        aria-controls={navId}
+        aria-expanded="false"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <div class="nav-container" id={navId}>
+        <ul class="nav-links">
+          {
+            main.map((item) => (
+              <li class="nav-item">
+                <NavbarLink href={item.url}>{item.name}</NavbarLink>
+              </li>
+            ))
+          }
+          <li class="nav-item">
+        <a
+          href="https://www.linkedin.com/in/fabrizio-cafolla"
+          target="_blank"
+          rel="noopener"
+          aria-label="LinkedIn"
+        >
+          <Icon name="fa:linkedin" aria-hidden="true" size={20} />
+        </a>
+          </li>
+          <li class="nav-item">
+        <a
+          href="https://github.com/FabrizioCafolla"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub"
+        >
+          <Icon name="fa:github" aria-hidden="true" size={20} />
+        </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: var(--white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    padding: 0;
+    transition: all 0.3s ease;
+  }
+
+  .site-header.scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    position: relative;
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .logo-text {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+
+  .logo-text a {
+    color: var(--black);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color var(--transition-fast);
+  }
+
+  .logo-text a:hover {
+    color: var(--primary);
+  }
+
+  .nav-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-links {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    gap: 1rem;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav-item a {
+    padding: 0.5rem 1rem;
+    color: var(--black);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    position: relative;
+    display: inline-block; /* Changed from block to inline-block */
+  }
+
+  /* Modified underline styling - narrower than text */
+  .nav-item a::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 50%;
+    background-color: var(--primary);
+    transform: translateX(-50%);
+    transition: width var(--transition-normal);
+  }
+  .nav-item a:hover::after,
+  .nav-item a.active::after {
+    width: 70%; /* Make underline narrower than text */
+  }
+
+  .nav-item a:hover::after {
+    background-color: var(--secondary);
+  }
+
+  /* Hide hamburger menu on desktop */
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    justify-content: center; /* Center hamburger lines */
+    align-items: center; /* Center hamburger lines */
+    position: relative;
+  }
+
+  .hamburger-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    margin: 4px 0; /* Adjusted margin */
+    background-color: var(--black);
+    transition: all 0.3s ease-in-out;
+    position: absolute; /* Make lines absolutely positioned */
+  }
+
+  /* Position each line */
+  .hamburger-line:nth-child(1) {
+    transform: translateY(-6px);
+  }
+
+  .hamburger-line:nth-child(3) {
+    transform: translateY(6px);
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .nav-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--white);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0rem 0rem;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+      z-index: 90;
+    }
+
+    .nav-container.show {
+      visibility: visible;
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .nav-links {
+      flex-direction: column;
+      width: 100%;
+      text-align: center;
+      gap: 1.5rem;
+      max-height: 80vh;
+      overflow-y: auto;
+      align-items: center; /* Center menu items */
+      padding: 0;
+    }
+
+    .nav-item {
+      width: auto; /* Change from 100% to auto */
+      margin: 0;
+      text-align: center; /* Ensure text alignment is centered */
+    }
+
+    .nav-item a {
+      font-size: 1.25rem;
+      padding: 0.75rem 1.5rem;
+      width: auto;
+      display: inline-block;
+      text-align: center; /* Ensure text is centered */
+    }
+
+    /* Display hamburger on mobile */
+    .hamburger {
+      display: flex;
+    }
+
+    /* Hamburger animation */
+    .hamburger.active .hamburger-line:nth-child(1) {
+      transform: rotate(45deg);
+    }
+
+    .hamburger.active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg);
+    }
+  }
+
+  /* Utility for screen reader only content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>
+
+<script>
+  // Initialize mobile menu functionality
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.getElementById("mobile-menu-toggle");
+    const navId = hamburger?.getAttribute("aria-controls");
+    const navContainer = document.getElementById(navId || "");
+
+    if (hamburger && navContainer) {
+      // Function to close menu
+      const closeMenu = () => {
+        hamburger.classList.remove("active");
+        hamburger.setAttribute("aria-expanded", "false");
+        navContainer.classList.remove("show");
+        document.body.classList.remove("menu-open");
+      };
+
+      // Function to open menu
+      const openMenu = () => {
+        hamburger.classList.add("active");
+        hamburger.setAttribute("aria-expanded", "true");
+        navContainer.classList.add("show");
+        document.body.classList.add("menu-open");
+      };
+
+      // Toggle menu on hamburger click
+      hamburger.addEventListener("click", function () {
+        const expanded = hamburger.getAttribute("aria-expanded") === "true";
+
+        if (expanded) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      // Close menu when clicking menu items
+      const menuLinks = navContainer.querySelectorAll("a");
+      menuLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          closeMenu();
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener("click", function (event) {
+        const isMenuOpen = hamburger.classList.contains("active");
+        const targetElement = event.target as Node;
+        const clickedOutside =
+          isMenuOpen && !navContainer.contains(targetElement) && !hamburger.contains(targetElement);
+
+        if (clickedOutside) {
+          closeMenu();
+        }
+      });
+
+      // Handle escape key to close menu
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && hamburger.classList.contains("active")) {
+          closeMenu();
+        }
+      });
+
+      // Close menu on resize to desktop view
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 768 && hamburger.classList.contains("active")) {
+          closeMenu();
+        }
+      });
+    }
+
+    // Add scrolled class to header on scroll
+    const header = document.querySelector(".site-header");
+    const applyScrollClass = () => {
+      if (window.scrollY > 10) {
+        header?.classList.add("scrolled");
+      } else {
+        header?.classList.remove("scrolled");
+      }
+    };
+
+    // Apply immediately in case page is loaded scrolled
+    applyScrollClass();
+
+    // Then on scroll events
+    window.addEventListener("scroll", applyScrollClass, { passive: true });
+  });
+</script>

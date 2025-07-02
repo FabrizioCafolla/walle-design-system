@@ -1,0 +1,179 @@
+---
+const today = new Date();
+import { config } from "@config/config";
+import { Icon } from "astro-icon/components";
+---
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-section footer-left">
+      <div class="copyright">
+        <span class="logo-text">{config.default.site.title}</span>
+        <span class="license">&copy; {today.getFullYear()} All right reserved.</span>
+      </div>
+    </div>
+
+    <div class="footer-section footer-center">
+      <nav class="footer-nav">
+        <a href="/">Home</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms-and-conditions">Terms & Conditions</a>
+      </nav>
+    </div>
+
+    <div class="footer-section footer-right">
+      <div class="social-links">
+        <a
+          href="https://www.linkedin.com/in/fabrizio-cafolla"
+          target="_blank"
+          rel="noopener"
+          aria-label="LinkedIn"
+        >
+          <Icon name="fa:linkedin" aria-hidden="true" size={20} />
+        </a>
+        <a
+          href="https://github.com/FabrizioCafolla"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub"
+        >
+          <Icon name="fa:github" aria-hidden="true" size={20} />
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding: 1.75rem 2rem;
+    background-color: var(--gray);
+    border-top: 1px solid #eaeaea;
+    color: var(--gray-dark);
+    font-size: 0.9rem;
+  }
+
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-section {
+    flex: 1;
+  }
+
+  .footer-left {
+    text-align: left;
+  }
+
+  .footer-center {
+    text-align: center;
+  }
+
+  .footer-right {
+    text-align: right;
+  }
+
+  .copyright {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-family: "Ronzino-Regular", sans-serif;
+  }
+
+  .license {
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+
+  .license a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .license a:hover {
+    text-decoration: underline;
+  }
+
+  .footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .footer-nav a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    position: relative;
+  }
+
+  .footer-nav a:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--primary);
+    transition: width 0.3s ease;
+  }
+
+  .footer-nav a:hover {
+    color: var(--primary);
+  }
+
+  .footer-nav a:hover:after {
+    width: 100%;
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #f1f1f1;
+    color: #666;
+    transition: all 0.2s ease;
+  }
+
+  .social-links a:hover {
+    background-color: var(--primary);
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .footer-container {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .footer-left,
+    .footer-center,
+    .footer-right {
+      text-align: center;
+    }
+
+    .copyright {
+      align-items: center;
+    }
+
+    .social-links {
+      justify-content: center;
+    }
+  }
+</style>
