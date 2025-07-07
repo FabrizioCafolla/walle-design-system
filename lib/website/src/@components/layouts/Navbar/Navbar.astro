@@ -1,15 +1,16 @@
 ---
 import NavbarLink from "./NavbarLink.astro";
 import { Icon } from "astro-icon/components";
-import { config } from "@config/config";
+import { config } from "@config";
 import menu from "@config/menu.json";
 
 export interface NavigationLink {
-  name: string;
+  name?: string;
   url: string;
+  icon?: string;
 }
 
-const { main }: { main: NavigationLink[] } = menu;
+const { main }: { main: NavigationLink[] } = config.menu;
 
 // Generate unique ID for this instance (for accessibility)
 const navId = `nav-${Math.random().toString(36).substring(2, 9)}`;
@@ -43,30 +44,16 @@ const navId = `nav-${Math.random().toString(36).substring(2, 9)}`;
           {
             main.map((item) => (
               <li class="nav-item">
-                <NavbarLink href={item.url}>{item.name}</NavbarLink>
+                <NavbarLink
+                  href={item.url}
+                  target={item.url.startsWith("http") ? "_blank" : "_self"}
+                >
+                  {item.icon ? <Icon name={item.icon} aria-hidden="true" size={20} /> : null}
+                  {item.name}
+                </NavbarLink>
               </li>
             ))
           }
-          <li class="nav-item">
-            <a
-              href="https://www.linkedin.com/in/fabrizio-cafolla"
-              target="_blank"
-              rel="noopener"
-              aria-label="LinkedIn"
-            >
-              <Icon name="fa:linkedin" aria-hidden="true" size={20} />
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              href="https://github.com/FabrizioCafolla"
-              target="_blank"
-              rel="noopener"
-              aria-label="GitHub"
-            >
-              <Icon name="fa:github" aria-hidden="true" size={20} />
-            </a>
-          </li>
         </ul>
       </div>
     </nav>
@@ -155,17 +142,20 @@ const navId = `nav-${Math.random().toString(36).substring(2, 9)}`;
     height: 2px;
     bottom: -2px;
     left: 50%;
-    background-color: var(--primary);
     transform: translateX(-50%);
     transition: width var(--transition-normal);
   }
   .nav-item a:hover::after,
   .nav-item a.active::after {
-    width: 70%; /* Make underline narrower than text */
+    width: 30%;
   }
 
   .nav-item a:hover::after {
-    background-color: var(--secondary);
+    background-color: var(--secondary) !important;
+  }
+
+  .nav-item a.active::after {
+    background-color: var(--primary);
   }
 
   /* Hide hamburger menu on desktop */

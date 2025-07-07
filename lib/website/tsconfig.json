@@ -5,10 +5,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components": ["src/components/index.js"],
-      "@components/*": ["src/components/*"],
+      "@components": ["src/@components/index.js"],
+      "@components/*": ["src/@components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@styles/*": ["src/styles/*"],
+      "@config": ["src/config"],
       "@config/*": ["src/config/*"],
       "@utils": ["src/utils/index.js"],
       "@utils/*": ["src/utils/*"]

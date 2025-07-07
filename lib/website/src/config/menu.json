@@ -6,11 +6,15 @@
     },
     {
       "name": "Example 1",
-      "url": "/"
+      "url": "/blog/example"
     },
     {
-      "name": "Example 2",
-      "url": "/"
+      "icon": "fa:linkedin",
+      "url": "https://www.linkedin.com/in/fabrizio-cafolla/"
+    },
+    {
+      "icon": "fa:github",
+      "url": "https://github.com/FabrizioCafolla"
     }
   ]
 }

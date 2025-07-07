@@ -1,0 +1,11 @@
+---
+import { config } from "@config";
+
+interface Props {
+  enable?: boolean;
+}
+
+const { enable = true } = Astro.props;
+---
+
+{config.env.IS_PRODUCTION && enable && "<add you analytics script snippet>"}
