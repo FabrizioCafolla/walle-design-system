@@ -9,8 +9,9 @@
       "@components/*": ["src/@components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@styles/*": ["src/styles/*"],
-      "@config": ["src/config"],
-      "@config/*": ["src/config/*"],
+      "@config": ["src/@components/config.ts"],
+      "@configData": ["src/configData"],
+      "@configData/*": ["src/configData/*"],
       "@utils": ["src/utils/index.js"],
       "@utils/*": ["src/utils/*"]
     },
