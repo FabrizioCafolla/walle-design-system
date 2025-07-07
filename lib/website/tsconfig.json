@@ -5,15 +5,18 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@components": ["src/@components/index.js"],
-      "@components/*": ["src/@components/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@styles/*": ["src/styles/*"],
-      "@config": ["src/@components/config.ts"],
-      "@configData": ["src/configData"],
-      "@configData/*": ["src/configData/*"],
-      "@utils": ["src/utils/index.js"],
-      "@utils/*": ["src/utils/*"]
+      "@walle/*": ["src/@walle/*"],
+
+      "@components": ["src/@walle/components/index.js"],
+      "@components/*": ["src/@walle/*"],
+
+      "@layouts": ["src/@walle/layouts/index.js"],
+      "@layouts/*": ["src/@walle/layouts/*"],
+
+      "@config": ["src/@walle/config.ts"],
+      "@styles/*": ["src/@walle/styles/*"],
+
+      "@utils": ["src/utils/index.js"]
     },
     "strictNullChecks": true
   }

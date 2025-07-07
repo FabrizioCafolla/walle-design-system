@@ -5,5 +5,8 @@ export type PostsEntry = CollectionEntry<"posts">;
 export interface Posts {
   title: string;
   description: string;
-  url?: string;
+  slug?: string;
+  tags?: string[];
+  publishDate?: Date;
+  author?: string;
 }

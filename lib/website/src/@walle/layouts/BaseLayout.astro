@@ -1,17 +1,19 @@
 ---
-import { Navbar, Footer, Head } from "@components";
+import { Navbar, Footer, Head } from "src/@walle/components";
+import config from "@walle/config";
 import "@styles/global.css";
 
 const {
   headerTitle,
-  headerDescription = "Il portale europeo sull'open source.",
-  headerImage = null,
-  headerRobots = "index, follow",
+  headerDescription = config.app.description || "",
+  headerImage = config.app.image || null,
+  headerRobots = config.app.robots || "index, follow",
+  headerLanguage = config.app.language || "",
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="it">
+<html lang={headerLanguage}>
   <head>
     <Head
       title={headerTitle}

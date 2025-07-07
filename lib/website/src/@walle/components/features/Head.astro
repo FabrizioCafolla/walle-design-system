@@ -1,7 +1,7 @@
 ---
 import "@styles/global.css";
-import { config } from "@configData/index";
-import Analytics from "@components/features/Analytics.astro";
+import config from "@config";
+import { Analytics } from "src/@walle/components";
 
 interface Props {
   title: string;
@@ -14,12 +14,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const {
   title,
-  description = config.default.site.description,
-  image = config.default.site.image,
+  description = config.app.description,
+  image = config.app.image,
   robots = null,
 } = Astro.props;
 
-const titleSeo = title + " | " + config.default.site.title;
+const titleSeo = title + " | " + config.app.title;
 ---
 
 <!-- Global Metadata -->

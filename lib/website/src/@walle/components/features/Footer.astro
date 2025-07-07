@@ -1,6 +1,6 @@
 ---
 const today = new Date();
-import config from "@config";
+import config from "@walle/config";
 import { Icon } from "astro-icon/components";
 ---
 
@@ -8,7 +8,7 @@ import { Icon } from "astro-icon/components";
   <div class="footer-container">
     <div class="footer-section footer-left">
       <div class="copyright">
-        <span class="logo-text">{config.default.site.title}</span>
+        <span class="logo-text">{config.app.title}</span>
         <span class="license">&copy; {today.getFullYear()} All right reserved.</span>
       </div>
     </div>
@@ -46,11 +46,15 @@ import { Icon } from "astro-icon/components";
 
 <style>
   footer {
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
     padding: 1.75rem 2rem;
     background-color: var(--gray);
     border-top: 1px solid #eaeaea;
     color: var(--gray-dark);
     font-size: 0.9rem;
+    z-index: 10;
   }
 
   .footer-container {

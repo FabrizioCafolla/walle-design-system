@@ -1,8 +1,7 @@
 ---
 import NavbarLink from "./NavbarLink.astro";
 import { Icon } from "astro-icon/components";
-import { config } from "@configData/index";
-import menu from "@configData/menu.json";
+import config from "@config";
 
 export interface NavigationLink {
   name?: string;
@@ -22,7 +21,7 @@ const navId = `nav-${Math.random().toString(36).substring(2, 9)}`;
       <div class="logo-container">
         <h2 class="logo-text">
           <a href="/" title="Home page">
-            {config.default.site.title}
+            {config.app.title}
           </a>
         </h2>
       </div>
