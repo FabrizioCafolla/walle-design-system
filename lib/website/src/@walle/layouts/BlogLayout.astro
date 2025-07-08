@@ -1,7 +1,7 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import type { Posts } from "src/pages/blog/interfaces";
-import { SectionHeaderStandard } from "src/@walle/components";
+import { BaseLayout } from "@walle/layouts";
+import type { Posts } from "@pages/blog/interfaces";
+import { SectionHeaderStandard } from "@walle/components";
 
 interface Props extends Posts {
   author?: string;
@@ -293,7 +293,7 @@ const formattedDate = publishDate
     top: 0;
     left: 0;
     width: 0%;
-    height: 2px;
+    height: 3px;
     background: var(--primary);
     z-index: 1000;
     transition: width 0.1s ease;

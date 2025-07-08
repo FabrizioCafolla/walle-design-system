@@ -1,7 +1,7 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
 import { render } from "astro:content";
-import BlogLayout from "@layouts/BlogLayout.astro";
+import { BlogLayout } from "@walle/layouts";
 import { calculateReadingTime } from "@utils";
 
 export async function getStaticPaths() {

@@ -6,17 +6,10 @@
     "baseUrl": ".",
     "paths": {
       "@walle/*": ["src/@walle/*"],
-
-      "@components": ["src/@walle/components/index.js"],
-      "@components/*": ["src/@walle/*"],
-
-      "@layouts": ["src/@walle/layouts/index.js"],
-      "@layouts/*": ["src/@walle/layouts/*"],
-
-      "@config": ["src/@walle/config.ts"],
-      "@styles/*": ["src/@walle/styles/*"],
-
-      "@utils": ["src/utils/index.js"]
+      "@utils": ["src/utils/index.js"],
+      "@utils/*": ["src/utils/*"],
+      "@content/*": ["src/content/*"],
+      "@pages/*": ["src/pages/*"]
     },
     "strictNullChecks": true
   }
