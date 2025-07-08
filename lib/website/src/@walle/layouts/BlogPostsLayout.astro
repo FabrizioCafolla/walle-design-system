@@ -1,0 +1,224 @@
+---
+import { BaseLayout } from "@walle/layouts";
+import Basic from "@walle/components/features/Card/Basic.astro";
+import { getCollection } from "astro:content";
+
+// Ottieni tutti i post dal blog
+const posts = await getCollection("posts");
+
+// Ordina i post per data di pubblicazione (più recenti prima)
+const sortedPosts = posts.sort((a, b) => {
+  const dateA = a.data.publishDate ? new Date(a.data.publishDate) : new Date(0);
+  const dateB = b.data.publishDate ? new Date(b.data.publishDate) : new Date(0);
+  return dateB.getTime() - dateA.getTime();
+});
+
+// Funzione per calcolare il tempo di lettura approssimativo
+function getReadingTime(description: string): string {
+  const wordsPerMinute = 200;
+  const words = description.trim().split(/\s+/).length * 10; // Stima
+  const minutes = Math.max(1, Math.ceil(words / wordsPerMinute));
+  return `${minutes} min di lettura`;
+}
+
+// Badge color dinamico
+function getBadgeColor(tag: string): "primary" | "secondary" | "success" | "warning" | "danger" {
+  const tagColors: Record<string, "primary" | "secondary" | "success" | "warning" | "danger"> = {
+    tutorial: "primary",
+    guide: "secondary",
+    news: "success",
+    tip: "warning",
+    advanced: "danger",
+    beginner: "success",
+    javascript: "warning",
+    astro: "primary",
+    css: "secondary",
+  };
+  return tagColors[tag?.toLowerCase()] || "primary";
+}
+---
+
+<BaseLayout headerTitle="Blog">
+  <slot />
+  <div class="modern-blog-main">
+    <div class="modern-blog-grid">
+      {sortedPosts.length === 0 && <div class="no-posts">Nessun articolo pubblicato.</div>}
+      {
+        sortedPosts.map((post, idx) => {
+          const badge = post.data.tags?.length
+            ? { text: post.data.tags[0], color: getBadgeColor(post.data.tags[0]) }
+            : undefined;
+          const readingTime = post.data.readingTime || getReadingTime(post.data.description);
+          return (
+            <Basic
+              key={post.id}
+              title={post.data.title}
+              content={`${post.data.description} • ${readingTime}`}
+              linkUrl={`/blog/${post.id}`}
+              imageUrl={`https://source.unsplash.com/600x400/?technology,code,${idx}`}
+              imageAlt={post.data.title}
+              badge={badge}
+              variant="default"
+              elevated={true}
+              buttonText="Leggi"
+              buttonIcon="fa:arrow-right"
+            />
+          );
+        })
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .modern-blog-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem 2rem;
+    background: linear-gradient(120deg, var(--gray) 0%, var(--white) 100%);
+    min-height: 100vh;
+  }
+
+  .modern-blog-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: linear-gradient(90deg, var(--primary) 30%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .modern-blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    align-items: stretch;
+    animation: fadeInUp 0.7s cubic-bezier(0.23, 1.01, 0.32, 1) both;
+  }
+
+  .modern-card {
+    border: none;
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.1),
+      0 1.5px 8px rgba(0, 0, 0, 0.04);
+    transition:
+      transform 0.18s cubic-bezier(0.23, 1.01, 0.32, 1),
+      box-shadow 0.18s cubic-bezier(0.23, 1.01, 0.32, 1);
+    background: linear-gradient(120deg, var(--white) 80%, var(--gray) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .modern-card:hover {
+    transform: translateY(-8px) scale(1.025) rotate(-0.5deg);
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.16),
+      0 2px 12px rgba(0, 0, 0, 0.07);
+    z-index: 2;
+  }
+  .modern-card .eos-card-image img {
+    filter: grayscale(10%) contrast(1.05) brightness(1.08);
+    transition: filter 0.2s;
+  }
+  .modern-card:hover .eos-card-image img {
+    filter: grayscale(0%) contrast(1.15) brightness(1.13) saturate(1.1);
+  }
+  .modern-card .eos-card-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+  .modern-card .eos-card-description {
+    font-size: 1.07rem;
+    color: var(--gray-dark);
+    margin-bottom: 0.5rem;
+    min-height: 3.2em;
+  }
+  .modern-card .eos-card-badge {
+    top: 1.2rem;
+    left: 1.2rem;
+    right: auto;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    opacity: 0.93;
+  }
+  .modern-card .eos-badge {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.3em 1em;
+    border-radius: 1.2em;
+  }
+  .modern-card .eos-card-actions {
+    margin-top: 1.2rem;
+    padding-top: 0;
+    text-align: right;
+  }
+  .modern-card .eos-card-content {
+    gap: 0.7rem;
+    padding-bottom: 1.2rem;
+  }
+  .modern-card .eos-card-image {
+    height: 220px;
+    background: var(--gray-light);
+  }
+  .no-posts {
+    grid-column: 1/-1;
+    text-align: center;
+    color: var(--gray-dark);
+    font-size: 1.3rem;
+    padding: 4rem 0;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 900px) {
+    .modern-blog-main {
+      padding: 2rem 0.5rem 3rem 0.5rem;
+    }
+    .modern-blog-title {
+      font-size: 2rem;
+    }
+    .modern-blog-grid {
+      gap: 1.3rem;
+    }
+    .modern-card .eos-card-image {
+      height: 160px;
+    }
+  }
+  @media (max-width: 600px) {
+    .modern-blog-title {
+      font-size: 1.3rem;
+      gap: 0.5rem;
+    }
+    .modern-blog-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .modern-card .eos-card-image {
+      height: 120px;
+    }
+    .modern-card .eos-card-content {
+      padding: 0.9rem;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

@@ -49,23 +49,93 @@ const formattedDate = publishDate
     </div>
   </SectionHeaderStandard>
 
-  <article class="article">
-    <div class="article-content">
-      <slot />
-    </div>
+  <div class="article-container">
+    <aside class="table-of-contents" id="toc">
+      <h3>Contents</h3>
+      <nav class="toc-nav" id="toc-nav">
+        <!-- Generated dynamically -->
+      </nav>
+    </aside>
 
-    <!-- Reading progress -->
-    <div class="progress-bar" id="progress-bar"></div>
-  </article>
+    <article class="article">
+      <div class="article-content" id="article-content">
+        <slot />
+      </div>
+
+      <!-- Reading progress -->
+      <div class="progress-bar" id="progress-bar"></div>
+    </article>
+  </div>
 </BaseLayout>
 
 <style>
+  .article-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 3rem;
+    padding: 0 2rem;
+    align-items: start;
+  }
+
+  .table-of-contents {
+    position: sticky;
+    margin-top: 3.5rem;
+    top: 100px;
+    background: var(--white);
+    border: 1px solid var(--gray);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+
+  .table-of-contents h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--black);
+    border-bottom: 1px solid var(--gray);
+    padding-bottom: 0.5rem;
+  }
+
+  .toc-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .toc-nav a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: var(--gray-dark);
+    text-decoration: none;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    border-left: 2px solid transparent;
+  }
+
+  .toc-nav a:hover {
+    background: var(--gray);
+    color: var(--primary);
+    border-left-color: var(--primary);
+  }
+
+  .toc-nav a.active {
+    background: var(--primary);
+    color: var(--white);
+    border-left-color: var(--primary-dark);
+    font-weight: 600;
+  }
+
   .article {
     background: var(--white);
     position: relative;
-    max-width: 65ch;
-    margin: 0 auto;
-    padding: 0 2rem 1.5rem;
+    min-height: 100vh;
   }
 
   .meta-wrapper {
@@ -130,6 +200,7 @@ const formattedDate = publishDate
     line-height: 1.8;
     color: var(--black);
     word-spacing: 0.1em;
+    max-width: 65ch;
   }
 
   /* Typography */
@@ -144,6 +215,7 @@ const formattedDate = publishDate
     line-height: 1.2;
     margin: 3rem 0 1rem 0;
     letter-spacing: -0.01em;
+    scroll-margin-top: 120px;
   }
 
   .article-content :global(h1) {
@@ -300,10 +372,31 @@ const formattedDate = publishDate
   }
 
   /* Responsive design */
+  @media (max-width: 1024px) {
+    .article-container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .table-of-contents {
+      position: relative;
+      top: 0;
+      max-height: none;
+      order: -1;
+    }
+
+    .article-content {
+      max-width: none;
+    }
+  }
+
   @media (max-width: 768px) {
     .article-container {
-      padding: 1.5rem 1rem;
-      padding-top: 2rem;
+      padding: 0 1rem;
+    }
+
+    .table-of-contents {
+      padding: 1rem;
     }
 
     .meta-info {
@@ -358,7 +451,11 @@ const formattedDate = publishDate
 
   @media (max-width: 480px) {
     .article-container {
-      padding: 1rem 0.75rem;
+      padding: 0 0.75rem;
+    }
+
+    .table-of-contents {
+      padding: 0.75rem;
     }
 
     .tags {
@@ -382,11 +479,16 @@ const formattedDate = publishDate
 
   /* Print styles */
   @media print {
+    .table-of-contents {
+      display: none;
+    }
+
     .progress-bar {
       display: none;
     }
 
     .article-container {
+      grid-template-columns: 1fr;
       max-width: none;
       padding: 0;
     }
@@ -399,17 +501,107 @@ const formattedDate = publishDate
 </style>
 
 <script>
+  interface TocItem {
+    id: string;
+    text: string;
+    element: HTMLElement;
+  }
+
+  let tocItems: TocItem[] = [];
+  let currentActiveIndex = -1;
+
+  // Generate Table of Contents
+  function generateTOC(): void {
+    const articleContent = document.getElementById("article-content");
+    const tocNav = document.getElementById("toc-nav");
+    const tocContainer = document.getElementById("toc");
+
+    if (!articleContent || !tocNav || !tocContainer) return;
+
+    const headings = articleContent.querySelectorAll("h2");
+
+    if (headings.length === 0) {
+      tocContainer.style.display = "none";
+      return;
+    }
+
+    tocItems = [];
+    let fragment = document.createDocumentFragment();
+
+    headings.forEach((heading, index) => {
+      const headingElement = heading as HTMLElement;
+      let id = headingElement.id;
+
+      if (!id) {
+        id = `heading-${index + 1}-${
+          headingElement.textContent
+            ?.toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w\-]+/g, "")
+            .substring(0, 50) || ""
+        }`;
+        headingElement.id = id;
+      }
+
+      const tocItem: TocItem = {
+        id,
+        text: headingElement.textContent || "",
+        element: headingElement,
+      };
+      tocItems.push(tocItem);
+
+      const link = document.createElement("a");
+      link.href = `#${id}`;
+      link.textContent = tocItem.text;
+      link.setAttribute("data-toc-index", index.toString());
+
+      fragment.appendChild(link);
+    });
+
+    tocNav.appendChild(fragment);
+  }
+
+  // Update active TOC item based on scroll position
+  function updateActiveTOC(): void {
+    if (tocItems.length === 0) return;
+
+    const scrollTop = window.pageYOffset;
+    const offset = 150; // Offset for sticky header
+
+    let activeIndex = -1;
+
+    for (let i = 0; i < tocItems.length; i++) {
+      const element = tocItems[i].element;
+      const elementTop = element.getBoundingClientRect().top + scrollTop;
+
+      if (elementTop <= scrollTop + offset) {
+        activeIndex = i;
+      }
+    }
+
+    if (activeIndex !== currentActiveIndex) {
+      const tocLinks = document.querySelectorAll(".toc-nav a");
+
+      tocLinks.forEach((link, index) => {
+        const linkElement = link as HTMLElement;
+        linkElement.classList.toggle("active", index === activeIndex);
+      });
+
+      currentActiveIndex = activeIndex;
+    }
+  }
+
   // Reading progress
-  function updateProgress() {
+  function updateProgress(): void {
     const article = document.querySelector(".article-content");
     const progressBar = document.getElementById("progress-bar");
 
     if (!article || !progressBar) return;
 
-    const articleHeight = article.offsetHeight;
+    const articleHeight = article.scrollHeight;
     const articleTop = article.offsetTop;
     const windowHeight = window.innerHeight;
-    const scrolled = window.scrollY;
+    const scrolled = window.pageYOffset;
 
     const progress = Math.min(
       Math.max((scrolled - articleTop + windowHeight * 0.25) / articleHeight, 0),
@@ -419,28 +611,56 @@ const formattedDate = publishDate
     progressBar.style.width = `${progress * 100}%`;
   }
 
-  // Smooth scroll for anchor links
-  function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-      anchor.addEventListener("click", function (e) {
+  // Smooth scroll for anchor links - FIX PRINCIPALE
+  function initSmoothScroll(): void {
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      if (target.tagName === "A" && target.getAttribute("href")?.startsWith("#")) {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute("href"));
-        if (target) {
-          target.scrollIntoView({
+        const targetId = target.getAttribute("href")?.substring(1);
+        const targetElement = document.getElementById(targetId || "");
+
+        if (targetElement) {
+          // Calcolo più preciso della posizione
+          const rect = targetElement.getBoundingClientRect();
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          const elementTop = rect.top + scrollTop;
+          const offset = 120; // Account for sticky header
+
+          window.scrollTo({
+            top: elementTop - offset,
             behavior: "smooth",
-            block: "start",
           });
         }
-      });
+      }
     });
+  }
+
+  // Throttle function for performance
+  function throttle(func: Function, limit: number): Function {
+    let inThrottle: boolean;
+    return function (this: any, ...args: any[]) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => (inThrottle = false), limit);
+      }
+    };
   }
 
   // Initialize
   document.addEventListener("DOMContentLoaded", () => {
-    updateProgress();
+    generateTOC();
     initSmoothScroll();
+    updateProgress();
+    updateActiveTOC();
 
-    window.addEventListener("scroll", updateProgress);
+    const throttledScroll = throttle(() => {
+      updateProgress();
+      updateActiveTOC();
+    }, 16); // ~60fps
+
+    window.addEventListener("scroll", throttledScroll, { passive: true });
     window.addEventListener("resize", updateProgress);
   });
 </script>
