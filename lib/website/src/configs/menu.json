@@ -1,5 +1,5 @@
 {
-  "main": [
+  "navbar": [
     {
       "name": "Home",
       "url": "/"
@@ -7,6 +7,24 @@
     {
       "name": "Example 1",
       "url": "/blog/example"
+    },
+    {
+      "icon": "fa:linkedin",
+      "url": "https://www.linkedin.com/in/fabrizio-cafolla/"
+    },
+    {
+      "icon": "fa:github",
+      "url": "https://github.com/FabrizioCafolla"
+    }
+  ],
+  "footer": [
+    {
+      "name": "Privacy Policy",
+      "url": "/privacy-policy"
+    },
+    {
+      "name": "Terms of Service",
+      "url": "/terms-of-service"
     },
     {
       "icon": "fa:linkedin",

@@ -2,6 +2,10 @@
 const today = new Date();
 import config from "@walle/config";
 import { Icon } from "astro-icon/components";
+
+const menu = Array.isArray(config.menu.footer) ? config.menu.footer : [];
+const navbar = menu.filter((item) => item.name);
+const socialLinks = menu.filter((item) => item.icon);
 ---
 
 <footer>
@@ -15,30 +19,24 @@ import { Icon } from "astro-icon/components";
 
     <div class="footer-section footer-center">
       <nav class="footer-nav">
-        <a href="/">Home</a>
-        <a href="/privacy-policy">Privacy Policy</a>
-        <a href="/terms-and-conditions">Terms & Conditions</a>
+        {navbar.map((item) => <a href={item.url}>{item.name}</a>)}
       </nav>
     </div>
 
     <div class="footer-section footer-right">
       <div class="social-links">
-        <a
-          href="https://www.linkedin.com/in/fabrizio-cafolla"
-          target="_blank"
-          rel="noopener"
-          aria-label="LinkedIn"
-        >
-          <Icon name="fa:linkedin" aria-hidden="true" size={20} />
-        </a>
-        <a
-          href="https://github.com/FabrizioCafolla"
-          target="_blank"
-          rel="noopener"
-          aria-label="GitHub"
-        >
-          <Icon name="fa:github" aria-hidden="true" size={20} />
-        </a>
+        {
+          socialLinks.map((item) => (
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noopener"
+              aria-label={item.icon.replace("fa:", "")}
+            >
+              <Icon name={item.icon} aria-hidden="true" size={20} />
+            </a>
+          ))
+        }
       </div>
     </div>
   </div>

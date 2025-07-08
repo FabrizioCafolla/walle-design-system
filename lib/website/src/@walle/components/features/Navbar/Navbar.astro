@@ -9,7 +9,7 @@ export interface NavigationLink {
   icon?: string;
 }
 
-const { main }: { main: NavigationLink[] } = config.menu;
+const navbar = Array.isArray(config.menu.navbar) ? config.menu.navbar : [];
 
 // Generate unique ID for this instance (for accessibility)
 const navId = `nav-${Math.random().toString(36).substring(2, 9)}`;
@@ -41,7 +41,7 @@ const navId = `nav-${Math.random().toString(36).substring(2, 9)}`;
       <div class="nav-container" id={navId}>
         <ul class="nav-links">
           {
-            main.map((item) => (
+            navbar.map((item: NavigationLink) => (
               <li class="nav-item">
                 <NavbarLink
                   href={item.url}
