@@ -1,5 +1,5 @@
 {
-  "name": "european-opensource-website",
+  "name": "walle-design-system",
   "build": {
     "dockerfile": "${localWorkspaceFolder}/.devcontainer/Dockerfile",
     "args": {

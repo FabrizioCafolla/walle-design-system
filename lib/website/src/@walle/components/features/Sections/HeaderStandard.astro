@@ -101,7 +101,7 @@ const headerId = `header-${Math.random().toString(36).slice(2, 11)}`;
 
 <style>
   .header-section {
-    padding: 4rem 1.5rem;
+    padding: 4rem 1.5rem 1rem;
     position: relative;
     overflow: hidden;
     cursor: default;
@@ -116,7 +116,6 @@ const headerId = `header-${Math.random().toString(36).slice(2, 11)}`;
   .header-secondary {
     background-color: var(--white);
     color: var(--black);
-    border-bottom: 1px solid var(--gray-light);
   }
 
   .header-white {
@@ -239,6 +238,7 @@ const headerId = `header-${Math.random().toString(36).slice(2, 11)}`;
   .header-title::after {
     content: "";
     position: absolute;
+    top: 110%;
     width: 0;
     height: 2px;
     bottom: -2px;

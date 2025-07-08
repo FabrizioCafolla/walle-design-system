@@ -11,6 +11,7 @@ const posts = defineCollection({
     slug: z.string().optional(),
     tags: z.array(z.string().max(24)).min(1).max(10).optional(),
     publishDate: z.date().optional(),
+    readingTime: z.string().optional(),
     author: z.string().optional(),
   }),
 });

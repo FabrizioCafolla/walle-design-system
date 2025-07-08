@@ -29,3 +29,41 @@ export function formatDate(dateString: string): string | null {
     year: "numeric",
   }).format(date);
 }
+
+export function calculateReadingTime(content: string): {
+  text: string;
+  minutes: number;
+  words: number;
+} {
+  const wordsPerMinute = 200;
+  const imageReadingTime = 12; // secondi per immagine
+  const codeReadingTime = 25; // secondi per blocco di codice
+
+  // Rimuovi HTML/Markdown e conta le parole
+  const cleanText = content
+    .replace(/<[^>]*>/g, "") // Rimuovi HTML
+    .replace(/```[\s\S]*?```/g, "") // Rimuovi blocchi di codice
+    .replace(/`[^`]*`/g, "") // Rimuovi codice inline
+    .replace(/!\[.*?\]\(.*?\)/g, "") // Rimuovi immagini markdown
+    .replace(/\[.*?\]\(.*?\)/g, "$1") // Converti link in testo
+    .trim();
+
+  const words = cleanText.split(/\s+/).filter((word) => word.length > 0).length;
+
+  // Conta immagini e blocchi di codice
+  const images = (content.match(/!\[.*?\]\(.*?\)/g) || []).length;
+  const codeBlocks = (content.match(/```[\s\S]*?```/g) || []).length;
+
+  // Calcola tempo totale
+  const textTime = words / wordsPerMinute;
+  const imageTime = (images * imageReadingTime) / 60;
+  const codeTime = (codeBlocks * codeReadingTime) / 60;
+
+  const totalMinutes = Math.ceil(textTime + imageTime + codeTime);
+
+  return {
+    text: `${totalMinutes} minute${totalMinutes !== 1 ? "s" : ""} read`,
+    minutes: totalMinutes,
+    words: words,
+  };
+}
