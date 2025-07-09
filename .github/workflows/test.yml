@@ -1,0 +1,26 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-data:
+    name: Test
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Test
+        id: test
+        uses: ./.github/workflows/actions/@walle/example
+        timeout-minutes: 5
+        with:
+          test: "test"
