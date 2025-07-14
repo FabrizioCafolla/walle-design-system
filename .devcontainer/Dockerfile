@@ -1,16 +1,16 @@
-ARG NODE_VERSION=22-bullseye
-
 FROM ghcr.io/opentofu/opentofu:minimal AS tofu
 
-FROM mcr.microsoft.com/devcontainers/javascript-node:$NODE_VERSION
+FROM mcr.microsoft.com/devcontainers/javascript-node:22-bullseye
 
 # Copy the tofu binary
 COPY --from=tofu /usr/local/bin/tofu /usr/local/bin/tofu
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    yq \
-    && rm -rf /var/lib/apt/lists/*
+    wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 \
+    && chmod +x /usr/local/bin/yq
 
 WORKDIR /app
 

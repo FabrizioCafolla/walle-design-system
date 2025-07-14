@@ -156,6 +156,8 @@ function init() {
 
   download_project "${DIR_PATH}/${PROJECT_NAME}"
 
+  rm -rf "${DIR_PATH}/${PROJECT_NAME}/.git"
+
   echo "Walle project initialized successfully in ${DIR_PATH}/${PROJECT_NAME}."
 }
 
