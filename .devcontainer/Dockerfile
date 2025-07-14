@@ -1,6 +1,16 @@
 ARG NODE_VERSION=22-bullseye
 
+FROM ghcr.io/opentofu/opentofu:minimal AS tofu
+
 FROM mcr.microsoft.com/devcontainers/javascript-node:$NODE_VERSION
+
+# Copy the tofu binary
+COPY --from=tofu /usr/local/bin/tofu /usr/local/bin/tofu
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    yq \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

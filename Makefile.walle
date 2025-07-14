@@ -1,0 +1,16 @@
+ARGS_FROM_TARGET = $(filter-out $@,$(MAKECMDGOALS))
+ARGS = $(if $(ARGS_FROM_TARGET),$(ARGS_FROM_TARGET),$(filter-out yarn,$(MAKECMDGOALS)))
+
+include lib/website/Makefile
+include lib/infrastructure/Makefile
+
+.PHONY: setup
+setup:
+	@$(MAKE) yarn ARGS_FROM_TARGET=install
+
+# This special target catches all arguments after the target name
+# Example:
+# 	make yarn -- dev
+# 	make yarn dev
+%:
+    @:

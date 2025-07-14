@@ -1,32 +1,12 @@
 ---
-import { Navbar, Footer, Head } from "@walle/components";
-import config from "@walle/config";
-import "@walle/styles/global.css";
-
-const {
-  headerTitle,
-  headerDescription = config.app.description || "",
-  headerImage = config.app.image || null,
-  headerRobots = config.app.robots || "index, follow",
-  headerLanguage = config.app.language || "",
-} = Astro.props;
+import { AbstractLayout } from "@walle/layouts";
+import { Navbar, Footer } from "@walle/components";
 ---
 
-<!doctype html>
-<html lang={headerLanguage}>
-  <head>
-    <Head
-      title={headerTitle}
-      description={headerDescription}
-      image={headerImage}
-      robots={headerRobots}
-    />
-  </head>
-  <body>
-    <Navbar />
-    <main>
-      <slot />
-    </main>
-    <Footer />
-  </body>
-</html>
+<AbstractLayout {...Astro.props}>
+  <Navbar />
+  <main>
+    <slot />
+  </main>
+  <Footer />
+</AbstractLayout>

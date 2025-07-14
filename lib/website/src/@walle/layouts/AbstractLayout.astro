@@ -1,0 +1,28 @@
+---
+import { Head } from "@walle/components";
+import config from "@walle/config";
+import "@walle/styles/global.css";
+
+const {
+  headerTitle = "",
+  headerDescription = config.app.description || "",
+  headerImage = config.app.image || null,
+  headerRobots = config.app.robots || "index, follow",
+  headerLanguage = config.app.language || "",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={headerLanguage}>
+  <head>
+    <Head
+      title={headerTitle}
+      description={headerDescription}
+      image={headerImage}
+      robots={headerRobots}
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
