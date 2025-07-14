@@ -24,15 +24,26 @@ usage_init() {
   echo
 }
 
+usage_update() {
+  echo "Usage: $0 update [options]"
+  echo
+  echo "Options:"
+  echo "  -h, --help                    Show this help message"
+  echo "  -s, --source-version <version> Specify the source version to update from (Defaults to 'main')"
+  echo "  -p, --project-path <path>     Specify the project path to update (Defaults to current directory)"
+  echo
+}
+
 function download_project() {
   local dir_path="$1"
+  local source_version="${2:-main}"
 
   if [ -z "${dir_path}" ]; then
     dir_path=$(mktemp -d)
   fi
 
   # Download the project from GitHub
-  git clone https://github.com/FabrizioCafolla/walle-design-system "$dir_path"
+  git clone -b "${source_version}" https://github.com/FabrizioCafolla/walle-design-system "$dir_path"
   if [ $? -ne 0 ]; then
     echo "Failed to download the project from GitHub."
     exit 1
@@ -57,20 +68,20 @@ function create_project_directory() {
 
 function create_config_file() {
   local project_name="$1"
-  local config_file=".walle.config.json"
+  local config_filepath="${2:-"."}/.walle.config.json"
 
   # Create a configuration file with project details
   echo "{
   \"projectName\": \"${project_name}\",
   \"walleVersion\": \"$(git --git-dir="${SCRIPT_PATH}/.git" rev-parse HEAD)\",
   \"updatedAt\": \"$(date +%Y-%m-%dT%H:%M:%S)\"
-}" >"${project_name}/${config_file}"
+}" >"${project_name}/${config_filepath}"
 
   if [ $? -ne 0 ]; then
-    echo "Failed to create configuration file: ${config_file}"
+    echo "Failed to create configuration file: ${config_filepath}"
     exit 1
   fi
-  echo "Configuration file created: ${config_file}"
+  echo "Configuration file created: ${config_filepath}"
 }
 
 function sync_files() {
@@ -114,8 +125,6 @@ function sync_walle_files() {
 
   # Clean up temporary directory
   rm -rf "$temp_dir"
-
-  create_config_file "${project_name}"
 }
 
 function init() {
@@ -155,8 +164,7 @@ function init() {
   fi
 
   download_project "${DIR_PATH}/${PROJECT_NAME}"
-
-  rm -rf "${DIR_PATH}/${PROJECT_NAME}/.git"
+  create_config_file "${PROJECT_NAME}" "${DIR_PATH}/${PROJECT_NAME}"
 
   echo "Walle project initialized successfully in ${DIR_PATH}/${PROJECT_NAME}."
 }
@@ -202,7 +210,7 @@ function update() {
 
   download_project "${TEMP_DIR}" "${SOURCE_VERSION}"
   sync_walle_files "${TEMP_DIR}" "${PROJECT_PATH}"
-  create_config_file "$(basename "${PROJECT_PATH}")"
+  create_config_file "$(basename "${PROJECT_PATH}")" "${PROJECT_PATH}"
 
   echo "Walle project updated successfully in ${PROJECT_PATH}."
 }
@@ -219,7 +227,7 @@ main() {
       ;;
     update)
       command="update"
-      shift 2
+      shift
       ;;
     -h | --help)
       usage
