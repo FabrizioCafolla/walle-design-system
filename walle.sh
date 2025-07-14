@@ -7,12 +7,12 @@ set -o functrace
 trap 'catch $? $LINENO ${BASH_SOURCE[0]}' EXIT
 catch() {
   if [ "$1" != "0" ]; then
-    # error handling goes here
     echo "[ERROR] in $(basename "$3") at line $2 (error code $1)"
   fi
+  if [ -d "${TEMP_DIR}" ]; then
+    rm -rf "${TEMP_DIR}"
+  fi
 }
-
-SCRIPT_PATH="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
 usage_init() {
   echo "Usage: $0 [options]"
@@ -34,54 +34,64 @@ usage_update() {
   echo
 }
 
+print_info() {
+  echo -e " [INFO] ${*}"
+}
+
+print_error() {
+  echo -e " [ERROR] ${*}"
+  exit 1
+}
+
+GITHUB_WALLE_REPO="https://github.com/FabrizioCafolla/walle-design-system"
+GITHUB_WALLE_VERSION_BRANCH="main"
+GITHUB_WALLE_VERSION_SHA="" # Is set during the download process
+TEMP_DIR="$(mktemp -d)"
+
 function download_project() {
   local dir_path="$1"
   local source_version="${2:-main}"
 
   if [ -z "${dir_path}" ]; then
-    dir_path=$(mktemp -d)
+    print_error "Directory path is required for downloading the project."
   fi
 
   # Download the project from GitHub
-  git clone -b "${source_version}" https://github.com/FabrizioCafolla/walle-design-system "$dir_path"
+  git clone -b "${source_version}" "${GITHUB_WALLE_REPO}" "${dir_path}" &> /dev/null
   if [ $? -ne 0 ]; then
-    echo "Failed to download the project from GitHub."
-    exit 1
+    print_error "Failed to download the project from ${GITHUB_WALLE_REPO}."
   fi
-  echo "Project downloaded to temporary directory: $dir_path"
+
+  cd "${dir_path}"
+  local sha
+  sha=$(git rev-parse --short HEAD)
+  export GITHUB_WALLE_VERSION_SHA="${sha}"
+  cd -
 }
 
 function create_project_directory() {
   local project_name="$1"
+
   if [ -z "$project_name" ]; then
-    echo "Project name is required."
-    exit 1
+    print_error "Project name is required."
   fi
 
-  mkdir -p "$project_name"
-  if [ $? -ne 0 ]; then
-    echo "Failed to create project directory: $project_name"
-    exit 1
-  fi
-  echo "Project directory created: $project_name"
+  mkdir -p "$project_name" || print_error "Failed to create project directory: $project_name"
 }
 
 function create_config_file() {
   local project_name="$1"
   local config_filepath="${2:-"."}/.walle.config.json"
+  local source_version="${3-main}"
 
   # Create a configuration file with project details
   echo "{
-  \"projectName\": \"${project_name}\",
-  \"walleVersion\": \"$(git --git-dir="${SCRIPT_PATH}/.git" rev-parse HEAD)\",
+  \"name\": \"${project_name}\",
+  \"walleVersion\": \"${source_version}\",
   \"updatedAt\": \"$(date +%Y-%m-%dT%H:%M:%S)\"
-}" >"${project_name}/${config_filepath}"
+}" >"${config_filepath}" || print_error "Failed to create configuration file: ${config_filepath}"
 
-  if [ $? -ne 0 ]; then
-    echo "Failed to create configuration file: ${config_filepath}"
-    exit 1
-  fi
-  echo "Configuration file created: ${config_filepath}"
+  print_info "Configuration file updated ${config_filepath}"
 }
 
 function sync_files() {
@@ -89,42 +99,44 @@ function sync_files() {
   local target_path="$2"
 
   if [ -z "$source_path" ] || [ -z "$target_path" ]; then
-    echo "Source and target paths are required for synchronization."
-    exit 1
+    print_error "Source and target paths are required for synchronization."
   fi
 
   if [ -d "$source_path" ]; then
-    mkdir -p "$target_path"
-    if [ $? -ne 0 ]; then
-      echo "Failed to create target directory: $target_path"
-      exit 1
+    # Remove existing target directory if it exists
+    if [ -d "${target_path}" ]; then
+      rm -rf "${target_path}"
     fi
-    cp -r "$source_path/" "$target_path/"
+
+    if [ $? -ne 0 ]; then
+      print_error "Failed to create parent directory for: $target_path"
+    fi
+
+    # Copy the entire directory
+    cp -r "${source_path}" "${target_path}"
   elif [ -f "$source_path" ]; then
-    cp "$source_path" "$target_path"
+    # Create parent directory if it doesn't exist
+    rm -f "${target_path}" || true
+    cp "${source_path}" "${target_path}"
   else
-    echo "Error synchronizing files from $source_path to $target_path."
-    return 1
+    print_error "Error synchronizing files from $source_path to $target_path."
   fi
 
-  echo "Files synchronized from ${source_path} to ${target_path}."
+  print_info "Synchronized from ${source_path} to ${target_path}."
 }
 function sync_walle_files() {
   local temp_dir="$1"
   local project_name="$2"
 
-  # Move files from the temporary directory to the project directory
+  sync_files "${temp_dir}/.devcontainer/@walle" "${project_name}/.devcontainer/@walle"
+  sync_files "${temp_dir}/.vscode" "${project_name}/.vscode"
   sync_files "${temp_dir}/lib/infrastructure/@walle" "${project_name}/lib/infrastructure/@walle"
   sync_files "${temp_dir}/lib/scripts/@walle" "${project_name}/lib/scripts/@walle"
   sync_files "${temp_dir}/lib/website/src/@walle" "${project_name}/lib/website/src/@walle"
   sync_files "${temp_dir}/.github/workflows/actions" "${project_name}/.github/workflows/actions"
-  sync_files "${temp_dir}/lib/Makefile.walle" "${project_name}/lib/Makefile.walle"
   sync_files "${temp_dir}/lib/infrastructure/Makefile" "${project_name}/lib/infrastructure/Makefile"
   sync_files "${temp_dir}/lib/website/Makefile" "${project_name}/lib/website/Makefile"
   sync_files "${temp_dir}/walle.sh" "${project_name}/walle.sh"
-
-  # Clean up temporary directory
-  rm -rf "$temp_dir"
 }
 
 function init() {
@@ -148,38 +160,35 @@ function init() {
       ;;
     *)
       usage_init
-      echo "Unknown command: $1"
-      exit 1
+      print_error "Unknown command: $1"
       ;;
     esac
   done
 
   if [ -z "${PROJECT_NAME}" ]; then
-    echo "Project name is required for initialization."
-    exit 1
+    print_error "Project name is required for initialization."
   fi
 
   if [ ! -d "${DIR_PATH}" ]; then
     mkdir -p "${DIR_PATH}"
   fi
+  print_info "Start initialize project ${PROJECT_PATH} to version in ${DIR_PATH} directory."
 
   download_project "${DIR_PATH}/${PROJECT_NAME}"
   create_config_file "${PROJECT_NAME}" "${DIR_PATH}/${PROJECT_NAME}"
 
-  echo "Walle project initialized successfully in ${DIR_PATH}/${PROJECT_NAME}."
+  print_info "Project ${PROJECT_NAME} initialized successfully in ${DIR_PATH} directory."
 }
 
 function update() {
-  local SOURCE_VERSION PROJECT_PATH
+  local PROJECT_PATH
 
-  SOURCE_VERSION="main"
   PROJECT_PATH="$(pwd)"
-  TEMP_DIR="$(mktemp -d)"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -s | --source-version)
-      SOURCE_VERSION="${2}"
+    -w | --walle-version)
+      export GITHUB_WALLE_VERSION_BRANCH="${2}"
       shift 2
       ;;
     -p | --project-path)
@@ -192,27 +201,26 @@ function update() {
       ;;
     *)
       usage_update
-      echo "Unknown command: $1"
-      exit 1
+      print_error "Unknown command: $1"
       ;;
     esac
   done
 
-  if [ -z "${SOURCE_VERSION}" ]; then
-    echo "Source version is required for update."
-    exit 1
+  if [ -z "${GITHUB_WALLE_VERSION_BRANCH}" ]; then
+    print_error "Source version is required for update."
   fi
 
   if [ ! -d "${PROJECT_PATH}" ]; then
-    echo "Project path does not exist: ${PROJECT_PATH}"
-    exit 1
+    print_error "Project path does not exist: ${PROJECT_PATH}"
   fi
 
-  download_project "${TEMP_DIR}" "${SOURCE_VERSION}"
-  sync_walle_files "${TEMP_DIR}" "${PROJECT_PATH}"
-  create_config_file "$(basename "${PROJECT_PATH}")" "${PROJECT_PATH}"
+  print_info "Start update project in ${PROJECT_PATH} to version ${GITHUB_WALLE_VERSION_BRANCH}"
 
-  echo "Walle project updated successfully in ${PROJECT_PATH}."
+  download_project "${TEMP_DIR}" "${GITHUB_WALLE_VERSION_BRANCH}"
+  sync_walle_files "${TEMP_DIR}" "${PROJECT_PATH}"
+  create_config_file "$(basename "${PROJECT_PATH}")" "${PROJECT_PATH}" "${GITHUB_WALLE_VERSION_SHA}"
+
+  print_info "Project updated successfully"
 }
 
 main() {
@@ -239,12 +247,12 @@ main() {
       ;;
     esac
   done
-  # * Da input o da usa la configurazione .walle.config.json per aggiornare i file walle all'interno del progetto
 
   if ! ${command} "${args[@]}"; then
-    echo "Command '$command' failed."
-    exit 1
+    print_error "Command '$command' failed."
   fi
+
+  rm -rf "${TEMP_DIR}"
 }
 
 main "$@"

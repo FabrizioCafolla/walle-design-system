@@ -10,9 +10,7 @@
   "appPort": ["4321:4321"],
   "workspaceFolder": "${localWorkspaceFolder}",
   "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
-  "mounts": [
-    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
-  ],
+  "mounts": ["source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached"],
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
@@ -50,10 +48,10 @@
           "editor.defaultFormatter": "redhat.vscode-yaml"
         },
         "[javascript]": {
-          "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
         "[typescript]": {
-          "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
         },
         "[json]": {
           "editor.defaultFormatter": "esbenp.prettier-vscode"

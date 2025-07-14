@@ -6,7 +6,12 @@ include lib/infrastructure/Makefile
 
 .PHONY: setup
 setup:
-	@$(MAKE) yarn ARGS_FROM_TARGET=install
+	@$(MAKE) yarn -- install
+
+update-walle:
+	@curl -fsSL https://raw.githubusercontent.com/FabrizioCafolla/walle-design-system/main/walle.sh -o walle.sh
+	@chmod +x walle.sh
+	./walle.sh update $(ARGS)
 
 # This special target catches all arguments after the target name
 # Example:

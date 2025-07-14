@@ -3,17 +3,10 @@ import { BaseLayout } from "@walle/layouts";
 import BasicCard from "@walle/components/features/Card/BasicCard.astro";
 import { getCollection } from "astro:content";
 
-interface Post {
-  headerTitle: string;
-  buttonText?: string;
-  buttonIcon?: string;
-  clickableCard?: boolean;
-}
 const {
   headerTitle = "Blog",
   buttonText = "Read more",
   buttonIcon = "fa:arrow-right",
-  clickableCard = true,
 } = Astro.props;
 
 // Ottieni tutti i post dal blog
@@ -41,7 +34,7 @@ function getReadingTime(description: string): string {
     <div class="modern-blog-grid">
       {sortedPosts.length === 0 && <div class="no-posts">Not post founded</div>}
       {
-        sortedPosts.map((post, idx) => {
+        sortedPosts.map((post) => {
           const badge = post.data.tags?.length
             ? { text: post.data.tags[0], color: "secondary" }
             : undefined;
