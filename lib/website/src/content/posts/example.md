@@ -1,9 +1,10 @@
 ---
-title: Lorem Ipsum Dolor Sit Amet
+title: Example
 description: Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam
 author: Fabrizio Cafolla
-publishDate: 2025-07-07
-tags: ["lorem", "ipsum", "example", "markdown"]
+publishDate: 2025-07-06
+tags: ["lorem", "ipsum", "example", "tech"]
+image: /img/posts/example/img-1.jpg
 ---
 
 ## Lorem Ipsum
@@ -33,6 +34,10 @@ At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praese
 4. Facere possimus, omnis voluptas assumenda est
 
 Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.
+
+### Image
+
+![img 1](/img/posts/example/img-1.jpg)
 
 ### Esempio di codice
 

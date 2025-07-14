@@ -5,6 +5,10 @@
       "url": "/"
     },
     {
+      "name": "Blog",
+      "url": "/blog"
+    },
+    {
       "name": "Example 1",
       "url": "/blog/example"
     },

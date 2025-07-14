@@ -17,10 +17,12 @@ export interface Props {
   elevated?: boolean;
   buttonIcon?: string;
   clickableCard?: boolean;
-  badge?: {
-    text: string;
-    color?: "primary" | "secondary" | "success" | "warning" | "danger";
-  };
+  badge?:
+    | {
+        text: string;
+        color?: "primary" | "secondary";
+      }
+    | undefined;
 }
 
 const {
@@ -171,15 +173,6 @@ const cardAttrs = clickableCard ? { href: linkUrl, target: linkTarget } : {};
   }
   .eos-badge-secondary {
     background: var(--secondary);
-  }
-  .eos-badge-success {
-    background: #2ecc71;
-  }
-  .eos-badge-warning {
-    background: #f39c12;
-  }
-  .eos-badge-danger {
-    background: #e74c3c;
   }
 
   .eos-card-content {

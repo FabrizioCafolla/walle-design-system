@@ -1,5 +1,5 @@
 ---
-title: Lorem Ipsum Dolor Sit Amet
+title: Example 2
 description: Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim veniam
 author: Fabrizio Cafolla
 publishDate: 2025-07-07

@@ -1,7 +1,20 @@
 ---
 import { BaseLayout } from "@walle/layouts";
-import Basic from "@walle/components/features/Card/Basic.astro";
+import BasicCard from "@walle/components/features/Card/BasicCard.astro";
 import { getCollection } from "astro:content";
+
+interface Post {
+  headerTitle: string;
+  buttonText?: string;
+  buttonIcon?: string;
+  clickableCard?: boolean;
+}
+const {
+  headerTitle = "Blog",
+  buttonText = "Read more",
+  buttonIcon = "fa:arrow-right",
+  clickableCard = true,
+} = Astro.props;
 
 // Ottieni tutti i post dal blog
 const posts = await getCollection("posts");
@@ -20,48 +33,33 @@ function getReadingTime(description: string): string {
   const minutes = Math.max(1, Math.ceil(words / wordsPerMinute));
   return `${minutes} min di lettura`;
 }
-
-// Badge color dinamico
-function getBadgeColor(tag: string): "primary" | "secondary" | "success" | "warning" | "danger" {
-  const tagColors: Record<string, "primary" | "secondary" | "success" | "warning" | "danger"> = {
-    tutorial: "primary",
-    guide: "secondary",
-    news: "success",
-    tip: "warning",
-    advanced: "danger",
-    beginner: "success",
-    javascript: "warning",
-    astro: "primary",
-    css: "secondary",
-  };
-  return tagColors[tag?.toLowerCase()] || "primary";
-}
 ---
 
-<BaseLayout headerTitle="Blog">
+<BaseLayout headerTitle={headerTitle}>
   <slot />
   <div class="modern-blog-main">
     <div class="modern-blog-grid">
-      {sortedPosts.length === 0 && <div class="no-posts">Nessun articolo pubblicato.</div>}
+      {sortedPosts.length === 0 && <div class="no-posts">Not post founded</div>}
       {
         sortedPosts.map((post, idx) => {
           const badge = post.data.tags?.length
-            ? { text: post.data.tags[0], color: getBadgeColor(post.data.tags[0]) }
+            ? { text: post.data.tags[0], color: "secondary" }
             : undefined;
           const readingTime = post.data.readingTime || getReadingTime(post.data.description);
           return (
-            <Basic
+            <BasicCard
               key={post.id}
               title={post.data.title}
               content={`${post.data.description} • ${readingTime}`}
               linkUrl={`/blog/${post.id}`}
-              imageUrl={`https://source.unsplash.com/600x400/?technology,code,${idx}`}
+              imageUrl={post.data.image || "/img/posts/default.jpg"}
               imageAlt={post.data.title}
               badge={badge}
-              variant="default"
+              clickableCard={true}
+              variant={"default"}
               elevated={true}
-              buttonText="Leggi"
-              buttonIcon="fa:arrow-right"
+              buttonText={buttonText}
+              buttonIcon={buttonIcon}
             />
           );
         })
