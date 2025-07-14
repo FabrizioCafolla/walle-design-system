@@ -1,5 +1,13 @@
 # Fabrizio Cafolla Blog's
 
+## Start new project
+
+1. `curl -fsSL https://raw.githubusercontent.com/FabrizioCafolla/walle-design-system/main/walle.sh | bash -s -- init --project-name <project-name>`
+   
+   Replace `<project-name>` with the desired value.
+
+   You can also specify directory path where initialize walle desisgn system with option `--dir-path <dir-path>`.
+
 ## Devmode
 
 ### With Dev Container (Recommended)

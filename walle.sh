@@ -64,7 +64,7 @@ function create_config_file() {
   \"projectName\": \"${project_name}\",
   \"walleVersion\": \"$(git --git-dir="${SCRIPT_PATH}/.git" rev-parse HEAD)\",
   \"updatedAt\": \"$(date +%Y-%m-%dT%H:%M:%S)\"
-}" > "${project_name}/${config_file}"
+}" >"${project_name}/${config_file}"
 
   if [ $? -ne 0 ]; then
     echo "Failed to create configuration file: ${config_file}"
@@ -104,30 +104,32 @@ function sync_walle_files() {
 
   # Move files from the temporary directory to the project directory
   sync_files "${temp_dir}/lib/infrastructure/@walle" "${project_name}/lib/infrastructure/@walle"
-  sync_files "${temp_dir}/lib/Makefile" "${project_name}/lib/Makefile"
   sync_files "${temp_dir}/lib/scripts/@walle" "${project_name}/lib/scripts/@walle"
   sync_files "${temp_dir}/lib/website/src/@walle" "${project_name}/lib/website/src/@walle"
-  sync_files "${temp_dir}/lib/website/Makefile" "${project_name}/lib/website/Makefile"
   sync_files "${temp_dir}/.github/workflows/actions" "${project_name}/.github/workflows/actions"
+  sync_files "${temp_dir}/lib/Makefile.walle" "${project_name}/lib/Makefile.walle"
+  sync_files "${temp_dir}/lib/infrastructure/Makefile" "${project_name}/lib/infrastructure/Makefile"
+  sync_files "${temp_dir}/lib/website/Makefile" "${project_name}/lib/website/Makefile"
+  sync_files "${temp_dir}/walle.sh" "${project_name}/walle.sh"
 
   # Clean up temporary directory
   rm -rf "$temp_dir"
 
-  create_config_file "$project_name"
+  create_config_file "${project_name}"
 }
 
 function init() {
   local PROJECT_NAME DIR_PATH
 
-  DIR_PATH="$(pwd)"  # Default to current directory
+  DIR_PATH="$(pwd)" # Default to current directory
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -n|--project-name)
+    -n | --project-name)
       PROJECT_NAME="${2}"
       shift 2
       ;;
-    -d|--dir-path)
+    -d | --dir-path)
       DIR_PATH="${2}"
       shift 2
       ;;
@@ -161,15 +163,16 @@ function update() {
   local SOURCE_VERSION PROJECT_PATH
 
   SOURCE_VERSION="main"
+  PROJECT_PATH="$(pwd)"
   TEMP_DIR="$(mktemp -d)"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
-    -s|--source-version)
+    -s | --source-version)
       SOURCE_VERSION="${2}"
       shift 2
       ;;
-    -p|--project-path)
+    -p | --project-path)
       PROJECT_PATH="${2}"
       shift 2
       ;;
@@ -194,9 +197,10 @@ function update() {
     echo "Project path does not exist: ${PROJECT_PATH}"
     exit 1
   fi
-  
+
   download_project "${TEMP_DIR}" "${SOURCE_VERSION}"
   sync_walle_files "${TEMP_DIR}" "${PROJECT_PATH}"
+  create_config_file "$(basename "${PROJECT_PATH}")"
 
   echo "Walle project updated successfully in ${PROJECT_PATH}."
 }
@@ -212,12 +216,7 @@ main() {
       shift
       ;;
     update)
-      # Requisito: aggiornare il progetto Walle
-      # Steps:
-      # 1. Scarica l'ultima versione del progetto Walle da GitHub in una cartella temporanea
-      # 2. Aggiorna i file necessari nella cartella del progetto* (inserito come argomento)
-      # 3. Aggiorna il file di configurazione .walle.config.json con le nuove informazioni
-      # 4. Esegue pulizie
+      command="update"
       shift 2
       ;;
     -h | --help)
@@ -232,7 +231,7 @@ main() {
   done
   # * Da input o da usa la configurazione .walle.config.json per aggiornare i file walle all'interno del progetto
 
-  if ! ${command} "${args[@]}" ; then
+  if ! ${command} "${args[@]}"; then
     echo "Command '$command' failed."
     exit 1
   fi
