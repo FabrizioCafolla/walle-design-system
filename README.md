@@ -2,7 +2,7 @@
 
 ## Start new project
 
-1. `curl -fsSL https://raw.githubusercontent.com/FabrizioCafolla/walle-design-system/main/walle.sh | bash -s -- init --project-name <project-name>`
+1. `curl -fsSL https://raw.githubusercontent.com/FabrizioCafolla/walle-design-system/main/lib/scripts/@walle/cli.sh | bash -s -- init --project-name <project-name>`
 
    Replace `<project-name>` with the desired value.
 
@@ -22,11 +22,11 @@
 
 1. **Requirements**
 
-   | pkg  | version  |
-   | ---- | -------- |
-   | Docker | `>=24` |
-   | Node   | `>=22` |
-   | Yarn | `^1.22`|
+   | pkg    | version |
+   | ------ | ------- |
+   | Docker | `>=24`  |
+   | Node   | `>=22`  |
+   | Yarn   | `^1.22` |
 
 2. **Setup the project:**
 

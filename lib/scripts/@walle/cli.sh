@@ -137,9 +137,7 @@ function sync_walle_files() {
   sync_files "${temp_dir}/lib/scripts/@walle" "${project_name}/lib/scripts/@walle"
   sync_files "${temp_dir}/lib/website/src/@walle" "${project_name}/lib/website/src/@walle"
   sync_files "${temp_dir}/.github/workflows/actions" "${project_name}/.github/workflows/actions"
-  sync_files "${temp_dir}/lib/infrastructure/Makefile" "${project_name}/lib/infrastructure/Makefile"
-  sync_files "${temp_dir}/lib/website/Makefile" "${project_name}/lib/website/Makefile"
-  sync_files "${temp_dir}/walle.sh" "${project_name}/walle.sh"
+  sync_files "${temp_dir}/walle.justfile" "${project_name}/walle.justfile"
 }
 
 function init() {

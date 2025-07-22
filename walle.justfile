@@ -13,7 +13,7 @@ walle *args:
 
 # Walle update design system
 walle-update *args:
-    curl -fsSL https://raw.githubusercontent.com/FabrizioCafolla/walle-design-system/main/walle.sh -o {{cli_filename}}
+    curl -fsSL https://raw.githubusercontent.com/FabrizioCafolla/walle-design-system/main/lib/scripts/@walle/cli.sh -o {{cli_filename}}
     chmod +x {{cli_filename}}
     just walle update {{args}}
 
