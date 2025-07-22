@@ -7,8 +7,6 @@ updates:
     labels:
       - "dependencies"
       - "dependencies-actions"
-    reviewers:
-      - "FabrizioCafolla"
   - package-ecosystem: "npm"
     directory: "/lib/website"
     schedule:
@@ -16,5 +14,3 @@ updates:
     labels:
       - "dependencies"
       - "dependencies-yarn"
-    reviewers:
-      - "FabrizioCafolla"
