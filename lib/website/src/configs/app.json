@@ -1,8 +1,16 @@
 {
-  "title": "Fabrizio Cafolla",
-  "description": "Welcome to our space!",
-  "favicon": "/images/profile.jpeg",
-  "image": "/images/banner.png",
-  "robots": "index, follow",
-  "language": "en-US"
+  "website": {
+    "title": "Walle",
+    "description": "Design System",
+    "favicon": "/images/profile.jpeg",
+    "image": "/images/banner.png",
+    "robots": "index, follow",
+    "language": "en-US"
+  },
+  "astro": {
+    "baseUrl": "https://fabriziocafolla.com/",
+    "basePath": "/",
+    "trailingSlash": "never",
+    "analyticsScriptContent": ""
+  }
 }

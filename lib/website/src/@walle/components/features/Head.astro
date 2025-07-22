@@ -1,7 +1,7 @@
 ---
-import "@walle/styles/global.css";
-import config from "@walle/config";
 import { Analytics } from "@walle/components";
+import config from "@walle/config";
+import "@walle/styles/global.css";
 
 interface Props {
   title: string;
@@ -14,12 +14,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const {
   title,
-  description = config.app.description,
-  image = config.app.image,
+  description = config.app.website.description,
+  image = config.app.website.image,
   robots = null,
 } = Astro.props;
 
-const titleSeo = title + " | " + config.app.title;
+const titleSeo = title + " | " + config.app.website.title;
 ---
 
 <!-- Global Metadata -->

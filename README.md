@@ -1,9 +1,9 @@
-# Fabrizio Cafolla Blog's
+# Walle Design System
 
 ## Start new project
 
 1. `curl -fsSL https://raw.githubusercontent.com/FabrizioCafolla/walle-design-system/main/walle.sh | bash -s -- init --project-name <project-name>`
-   
+
    Replace `<project-name>` with the desired value.
 
    You can also specify directory path where initialize walle desisgn system with option `--dir-path <dir-path>`.
@@ -12,7 +12,7 @@
 
 ### With Dev Container (Recommended)
 
-1. Requirements: `Docker >=24` 
+1. Requirements: `Docker >=24`
 2. Open the project in Visual Studio Code
 3. Install the Dev Containers extension
 4. Reopen in container when prompted

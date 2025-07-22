@@ -1,14 +1,16 @@
 ---
-import { Head } from "@walle/components";
+import { Analytics, Head } from "@walle/components";
 import config from "@walle/config";
 import "@walle/styles/global.css";
+/* Ignore this line if you don't have a global.css file */
+import "@styles/global.css";
 
 const {
   headerTitle = "",
-  headerDescription = config.app.description || "",
-  headerImage = config.app.image || null,
-  headerRobots = config.app.robots || "index, follow",
-  headerLanguage = config.app.language || "",
+  headerDescription = config.app.website.description || "",
+  headerImage = config.app.website.image || null,
+  headerRobots = config.app.website.robots || "index, follow",
+  headerLanguage = config.app.website.language || "",
 } = Astro.props;
 ---
 
@@ -20,6 +22,10 @@ const {
       description={headerDescription}
       image={headerImage}
       robots={headerRobots}
+    />
+    <Analytics
+      enable={config.env.IS_PRODUCTION || false}
+      scriptContent={config.app.astro.analyticsScriptContent || ""}
     />
   </head>
   <body>

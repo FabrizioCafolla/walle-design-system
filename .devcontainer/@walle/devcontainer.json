@@ -1,7 +1,7 @@
 {
   "name": "walle-design-system",
   "build": {
-    "dockerfile": "${localWorkspaceFolder}/.devcontainer/Dockerfile",
+    "dockerfile": "${localWorkspaceFolder}/.devcontainer/@walle/Dockerfile",
     "args": {
       "NODE_VERSION": "22-bullseye"
     },
@@ -10,7 +10,9 @@
   "appPort": ["4321:4321"],
   "workspaceFolder": "${localWorkspaceFolder}",
   "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
-  "mounts": ["source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached"],
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,consistency=cached,readonly"
+  ],
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
@@ -68,7 +70,7 @@
   "containerEnv": {
     "NODE_ENV": "development"
   },
-  "postCreateCommand": "make setup",
-  "postStartCommand": "make dev",
+  "postCreateCommand": "just setup",
+  "postStartCommand": "just dev",
   "remoteUser": "node"
 }

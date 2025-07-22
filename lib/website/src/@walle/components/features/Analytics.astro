@@ -1,11 +1,10 @@
 ---
-import config from "@walle/config";
-
 interface Props {
   enable?: boolean;
+  scriptContent?: string;
 }
 
-const { enable = true } = Astro.props;
+const { enable = true, scriptContent } = Astro.props;
 ---
 
-{config.env.IS_PRODUCTION && enable && "<add you analytics script snippet>"}
+{enable && scriptContent && <Fragment set:html={scriptContent} />}

@@ -1,12 +1,11 @@
 name: Tests
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: read
   id-token: write
 
 concurrency:
@@ -23,7 +22,5 @@ jobs:
 
       - name: Test
         id: test
-        uses: ./.github/workflows/actions/@walle/example
+        uses: ./.github/workflows/actions/@walle/website-tests
         timeout-minutes: 5
-        with:
-          test: "test"

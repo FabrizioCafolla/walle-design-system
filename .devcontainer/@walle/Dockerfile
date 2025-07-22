@@ -16,7 +16,8 @@ WORKDIR /app
 
 COPY lib/website/package.json lib/website/yarn.lock ./lib/website/
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile && \
+    npm install -g rust-just
 
 COPY . .
 

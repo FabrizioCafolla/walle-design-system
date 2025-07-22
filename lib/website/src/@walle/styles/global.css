@@ -23,29 +23,19 @@
 }
 
 @font-face {
-  font-family: "NectoMono";
-  src: url("/fonts/NectoMono-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: "Ronzino-Regular";
   src: url("/fonts/Ronzino-Regular.woff2") format("woff2");
   font-style: normal;
+  font-weight: 500;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Ronzino-Medium";
-  src: url("/fonts/Ronzino-Medium.woff2") format("woff2");
+  font-family: "Ronzino-Bold";
+  src: url("/fonts/Ronzino-Bold.woff2") format("woff2");
   font-style: normal;
+  font-weight: 700;
   font-display: swap;
-}
-
-.logo-text {
-  font-family: "NectoMono", sans-serif;
 }
 
 html {
@@ -104,6 +94,7 @@ h5 {
 strong,
 b {
   font-weight: 700;
+  font-family: "Ronzino-Bold", sans-serif;
 }
 a {
   color: var(--primary);

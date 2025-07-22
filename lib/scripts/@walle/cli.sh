@@ -14,6 +14,9 @@ catch() {
   fi
 }
 
+SCRIPT_PATH="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+PROJECT_ROOT="${SCRIPT_PATH%%/lib/*}"
+
 usage_init() {
   echo "Usage: $0 [options]"
   echo
@@ -247,6 +250,8 @@ main() {
       ;;
     esac
   done
+
+  cd "${PROJECT_ROOT}" || print_error "Failed to change directory to ${PROJECT_ROOT}"
 
   if ! ${command} "${args[@]}"; then
     print_error "Command '$command' failed."
