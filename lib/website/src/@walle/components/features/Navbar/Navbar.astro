@@ -1,6 +1,7 @@
 ---
 import NavbarMenu from "./NavbarMenu.astro";
 import type { NavbarConfig } from "@walle/config";
+import { resolveInternalUrl } from "@walle/utils";
 
 export interface Props {
   config: NavbarConfig;
@@ -22,7 +23,7 @@ const shouldShowBrand = hasLogo || hasTitle;
           shouldShowBrand && (
             <div class="brand-container">
               <a
-                href={config.logo?.url || "/"}
+                href={resolveInternalUrl(config.logo?.url || "/")}
                 title={config.logo?.title || "Home"}
                 class="brand-link"
               >
@@ -208,16 +209,16 @@ const shouldShowBrand = hasLogo || hasTitle;
   .dropdown-menu {
     position: absolute;
     top: calc(100% + 12px);
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px) scale(0.95);
     min-width: 160px;
     width: max-content;
-    max-width: min(100%, 520px);
+    max-width: min(calc(100vw - 2rem), 520px);
     background: white;
     border-radius: 16px;
     box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-8px) scale(0.95);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     list-style: none;
@@ -232,7 +233,7 @@ const shouldShowBrand = hasLogo || hasTitle;
   .nav-item.has-dropdown.active .dropdown-menu {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0) scale(1);
+    transform: translateX(-50%) translateY(0) scale(1);
   }
 
   .dropdown-item {
@@ -427,6 +428,7 @@ const shouldShowBrand = hasLogo || hasTitle;
 
     .dropdown-menu {
       position: static;
+      left: auto;
       width: 100%;
       background: transparent;
       box-shadow: none;
@@ -443,6 +445,7 @@ const shouldShowBrand = hasLogo || hasTitle;
 
     .nav-item.has-dropdown.active .dropdown-menu {
       display: block;
+      transform: none;
     }
 
     .dropdown-item {

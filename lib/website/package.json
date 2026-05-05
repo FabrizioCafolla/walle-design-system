@@ -13,7 +13,8 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "prepare": "cd ../../ && husky lib/website/.husky",
-    "test": "yarn lint:fix && yarn format:fix"
+    "test": "yarn lint:fix && yarn format:fix",
+    "test:e2e": "node tests/@walle/playwright/navbar.test.mjs"
   },
   "engines": {
     "node": ">=22.0.0"
@@ -35,6 +36,7 @@
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-markdown": "^5.1.0",
     "husky": "^9.1.7",
+    "playwright": "^1.52.0",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"
