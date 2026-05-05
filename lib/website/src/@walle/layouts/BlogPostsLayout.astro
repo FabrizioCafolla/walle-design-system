@@ -39,6 +39,7 @@ const allCategories: string[] = Array.from(
 ---
 
 <BaseLayout headerTitle={headerTitle}>
+  <slot name="head" slot="head" />
   <main class="blog-layout">
     <div class="blog-layout__header">
       <slot />

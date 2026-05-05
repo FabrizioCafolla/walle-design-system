@@ -10,24 +10,22 @@
     },
     {
       "name": "Blog",
-      "children": [
+      "url": "/blog",
+      "dropdown": [
         { "name": "Posts", "url": "/blog" },
-        {
-          "name": "Examples",
-          "children": [
-            { "name": "Example 1", "url": "/blog/example" },
-            { "name": "Example 2", "url": "/blog/example-2" }
-          ]
-        }
+        { "name": "Example 1", "url": "/blog/example" },
+        { "name": "Example 2", "url": "/blog/example-2" }
       ]
     },
     {
       "icon": "fa:linkedin",
-      "url": "https://www.linkedin.com/in/fabrizio-cafolla/"
+      "url": "https://www.linkedin.com/in/fabrizio-cafolla/",
+      "target": "_blank"
     },
     {
       "icon": "fa:github",
-      "url": "https://github.com/FabrizioCafolla"
+      "url": "https://github.com/FabrizioCafolla",
+      "target": "_blank"
     }
   ]
 }
